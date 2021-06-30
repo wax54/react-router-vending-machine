@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Link } from 'react-router-dom';
+import {v4 as uuid} from 'uuid';
 
 import SiteNav from "./SiteNav";
+import ShoppingCart from "./ShoppingCart";
+
 import Snickers from "./Snickers";
 import Gum from "./Gum";
 import Coke from "./Coke";
@@ -15,13 +18,13 @@ const snackList = [
 ]
 
 const VendingMachineHeader = () => (
-    <header>
+    <header className="VendingMachine-header">
             <h1> Hello! I am the vending machine! </h1>
             <h3> Here are my options </h3>
                 <ul>
                     {snackList.map( snack => (
-                        <li>
-                            <Link to={snack.path}>{snack.name}</Link>
+                        <li key= { snack.path }>
+                            <Link  to={snack.path}>{snack.name}</Link>
                         </li>
                     ))}
                 </ul>
@@ -30,6 +33,10 @@ const VendingMachineHeader = () => (
 
 
 const VendingMachine = () => {
+    const [cart, setCart] = useState([]);
+
+    const addToCart =  item  => setCart( cart => [...cart, {...item, id: uuid() }]);
+    const removeFromCart = itemId => setCart(cart => cart.filter( ({ id }) => id !== itemId ));
     return (
     <div className="VendingMachine">
         <BrowserRouter>
@@ -39,11 +46,15 @@ const VendingMachine = () => {
             <Route exact path="/" >
                 <VendingMachineHeader /> 
             </Route>
+
             { snackList.map( ({ path, Component }) => (
-                <Route exact path={path} >
-                    <Component />
+                <Route key={path} exact path={path} >
+                    <Component purchase={addToCart}/>
                 </Route >
             ))}
+
+            <ShoppingCart items={cart} remove={ removeFromCart } />
+
         </BrowserRouter>
     </div>
 )};
