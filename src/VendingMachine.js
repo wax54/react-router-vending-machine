@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Link } from 'react-router-dom';
+import {Route, Link } from 'react-router-dom';
 import {v4 as uuid} from 'uuid';
 
 import SiteNav from "./SiteNav";
@@ -39,23 +39,21 @@ const VendingMachine = () => {
     const removeFromCart = itemId => setCart(cart => cart.filter( ({ id }) => id !== itemId ));
     return (
     <div className="VendingMachine">
-        <BrowserRouter>
 
-            <SiteNav className="VendingMachine-nav" pageList={snackList} />
+        <SiteNav className="VendingMachine-nav" pageList={snackList} />
 
-            <Route exact path="/" >
-                <VendingMachineHeader /> 
-            </Route>
+        <Route exact path="/" >
+            <VendingMachineHeader /> 
+        </Route>
 
-            { snackList.map( ({ path, Component }) => (
-                <Route key={path} exact path={path} >
-                    <Component purchase={addToCart}/>
-                </Route >
-            ))}
+        { snackList.map( ({ path, Component }) => (
+            <Route key={path} exact path={path} >
+                <Component purchase={addToCart}/>
+            </Route >
+        ))}
 
-            <ShoppingCart items={cart} remove={ removeFromCart } />
+        <ShoppingCart items={cart} remove={ removeFromCart } />
 
-        </BrowserRouter>
     </div>
 )};
 export default VendingMachine
